@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Redacción de textos, correos y documentos con ChatGPT</title>
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;900&display=swap');
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Montserrat', sans-serif; background: #f0f2f5; color: #333; }
+    .slide { width: 100%; max-width: 1024px; margin: 20px auto; background: #fff; border-radius: 20px; box-shadow: 0 8px 30px rgba(0,0,0,0.12); overflow: hidden; min-height: 500px; display: flex; flex-direction: column; }
+    .slide-header { background: #3d5a96; padding: 18px 30px; display: flex; align-items: center; justify-content: space-between; }
+    .slide-header h2 { color: #fff; font-size: 20px; font-weight: 700; }
+    .slide-header .num { color: rgba(255,255,255,0.6); font-size: 14px; }
+    .slide-body { padding: 30px; flex: 1; }
+    .slide-footer { background: #2e4575; padding: 10px 30px; display: flex; justify-content: space-between; color: rgba(255,255,255,0.7); font-size: 12px; }
+    .portada { min-height: 90vh; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; position: relative; overflow: hidden; }
+    .portada-bg { position: absolute; inset: 0; background: linear-gradient(135deg, #3d5a96 0%, #e8755c 50%, #d05a7e 100%); z-index: 0; }
+    .portada .franja1 { position: absolute; bottom: 0; left: 0; right: 0; height: 12px; background: #e8755c; z-index: 1; }
+    .portada .franja2 { position: absolute; top: 0; right: 0; width: 25%; height: 8%; background: #d05a7e; z-index: 1; }
+    .portada .franja3 { position: absolute; bottom: 0; left: 0; width: 10%; height: 18%; background: #d05a7e; z-index: 1; }
+    .portada .franja4 { position: absolute; bottom: 0; right: 0; width: 15%; height: 12%; background: #e8755c; z-index: 1; }
+    .portada-content { position: relative; z-index: 2; padding: 40px; }
+    .portada .campus { color: rgba(255,255,255,0.7); font-size: 13px; letter-spacing: 4px; font-weight: 700; margin-bottom: 40px; }
+    .portada h1 { color: #fff; font-size: 48px; font-weight: 900; line-height: 1.2; margin-bottom: 8px; text-shadow: 3px 3px 12px rgba(0,0,0,0.2); }
+    .portada h1 span { display: block; font-size: 32px; font-weight: 600; }
+    .portada .tema-label { color: rgba(255,255,255,0.85); font-size: 18px; margin-top: 50px; }
+    .portada .tema { color: #fff; font-size: 28px; font-weight: 700; margin-top: 8px; }
+    .portada .instituto { color: rgba(255,255,255,0.75); font-size: 15px; margin-top: 50px; }
+    .portada .fecha { color: rgba(255,255,255,0.55); font-size: 13px; margin-top: 10px; }
+    h3 { color: #3d5a96; font-size: 22px; margin-bottom: 20px; }
+    h4 { color: #3d5a96; font-size: 18px; margin-bottom: 12px; }
+    .block { background: #fdf4f0; border-left: 5px solid #e8755c; padding: 18px 20px; border-radius: 0 10px 10px 0; margin: 15px 0; }
+    .block-title { font-weight: 700; color: #e8755c; margin-bottom: 6px; }
+    .block-blue { background: #eff2f8; border-left: 5px solid #3d5a96; }
+    .block-blue .block-title { color: #3d5a96; }
+    .block-pink { background: #fdf0f4; border-left: 5px solid #d05a7e; }
+    .block-pink .block-title { color: #d05a7e; }
+    .block-vino { background: #fdf0f2; border-left: 5px solid #691b31; }
+    .block-vino .block-title { color: #691b31; }
+    ul, ol { padding-left: 22px; line-height: 2; }
+    li { margin-bottom: 4px; }
+    .columns { display: flex; gap: 30px; }
+    .columns > div { flex: 1; }
+    table { width: 100%; border-collapse: collapse; margin: 15px 0; }
+    th, td { border: 1px solid #ddd; padding: 10px 14px; text-align: left; }
+    th { background: #3d5a96; color: #fff; }
+    tr:nth-child(even) { background: #f8f9fc; }
+    .tag { display: inline-block; background: #3d5a96; color: #fff; padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: 600; margin-right: 6px; }
+    .center { text-align: center; }
+    .final { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 400px; text-align: center; }
+    .final h2 { color: #3d5a96; font-size: 32px; margin-bottom: 20px; }
+    .final p { color: #666; font-size: 18px; }
+    .nav-bar { max-width: 1024px; margin: 10px auto; display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; }
+    .nav-bar button { background: #3d5a96; color: #fff; border: none; padding: 8px 16px; border-radius: 8px; cursor: pointer; font-family: 'Montserrat', sans-serif; font-weight: 600; font-size: 13px; transition: all 0.2s; }
+    .nav-bar button:hover { background: #e8755c; transform: translateY(-2px); }
+    .nav-bar button.activo { background: #d05a7e; }
+    .nav-controls { max-width: 1024px; margin: 10px auto; display: flex; gap: 10px; justify-content: center; }
+    .nav-controls button { background: #3d5a96; color: #fff; border: none; padding: 10px 28px; border-radius: 25px; cursor: pointer; font-family: 'Montserrat', sans-serif; font-weight: 700; font-size: 15px; transition: all 0.2s; }
+    .nav-controls button:hover { background: #e8755c; transform: scale(1.05); }
+    .counter { max-width: 1024px; margin: 5px auto; text-align: center; font-size: 13px; color: #888; }
+    @media (max-width: 768px) {
+        .portada h1 { font-size: 32px; }
+        .portada h1 span { font-size: 24px; }
+        .portada .tema { font-size: 20px; }
+        .columns { flex-direction: column; }
+        .slide-body { padding: 20px; }
+        .slide-header h2 { font-size: 16px; }
+    }
+</style>
+</head>
+<body>
+
+<div class="nav-controls">
+    <button onclick="ant()">&#9664; Anterior</button>
+    <button onclick="sig()">Siguiente &#9654;</button>
+</div>
+<div class="counter" id="counter"></div>
+
+<div id="slides-container"></div>
+
+<script>
+const slides = [
+    // ---------- PORTADA ----------
+    { tipo: 'portada' },
+
+    // ---------- INDICE ----------
+    {
+        titulo: 'Indice',
+        num: '2 / 19',
+        body: `<div class="columns" style="font-size:18px;line-height:2.4;">
+            <div><strong style="color:#3d5a96;">1. Redaccion de Textos</strong><br>
+            - Textos cotidianos<br>
+            - Adaptar tono y estilo<br><br>
+            <strong style="color:#3d5a96;">2. Correos Electronicos</strong><br>
+            - Correos con ChatGPT<br>
+            - Ejemplos practicos<br>
+            - Corregir y mejorar</div>
+            <div><strong style="color:#3d5a96;">3. Documentos y Reportes</strong><br>
+            - Documentos largos<br>
+            - Resumir y sintetizar<br><br>
+            <strong style="color:#3d5a96;">4. Buenas Practicas</strong><br>
+            - Buenas practicas<br>
+            - Verificacion<br>
+            - Actividad practica<br><br>
+            <strong style="color:#3d5a96;">5. Conclusiones</strong></div>
+            <div></div>
+        </div>`
+    },
+
+
+
+    // ---------- REDACCION DE TEXTOS ----------
+    {
+        titulo: '1. Redaccion de Textos — Textos cotidianos',
+        num: '3 / 14',
+        body: `<div class="columns">
+            <div><strong style="color:#3d5a96;">Ejemplos de uso:</strong>
+            <ul><li>Avisos para grupos de WhatsApp.</li>
+            <li>Publicaciones para Facebook o Instagram.</li>
+            <li>Descripciones de productos o servicios.</li>
+            <li>Notas informativas breves.</li></ul></div>
+            <div><strong style="color:#3d5a96;">Prompt sugerido:</strong>
+            <div class="block block-blue" style="margin-top:8px;">
+                <em>"Escribe un aviso para un grupo de padres de familia, informando que la reunion mensual se cambio al jueves a las 5 pm. Tono cordial y claro."</em>
+            </div></div>
+        </div>
+        <div class="block block-vino" style="margin-top:20px;">
+            <div class="block-title">Consejo</div>
+            Siempre especifica la <strong>extension maxima</strong> (palabras o parrafos) para evitar respuestas demasiado largas.
+        </div>`
+    },
+
+    {
+        titulo: '1. Redaccion de Textos — Adaptar tono y estilo',
+        num: '4 / 14',
+        body: `<div class="block">
+            <div class="block-title">Como pedirle a ChatGPT que adapte el tono?</div>
+            Solo agrega al final del prompt: <em>"Con un tono <strong>[formal / informal / persuasivo / amigable / tecnico]</strong>."</em>
+        </div>
+        <table style="margin-top:15px;">
+            <tr><th>Tono</th><th>Ejemplo de prompt adicional</th></tr>
+            <tr><td>Formal</td><td>"Redacta con un tono formal y respetuoso."</td></tr>
+            <tr><td>Informal</td><td>"Redacta con un tono casual y amigable."</td></tr>
+            <tr><td>Persuasivo</td><td>"Redacta de manera convincente para animar a los lectores a participar."</td></tr>
+            <tr><td>Tecnico</td><td>"Usa vocabulario tecnico propio del area de informatica."</td></tr>
+        </table>`
+    },
+
+    // ---------- CORREOS ELECTRONICOS ----------
+    {
+        titulo: '2. Correos Electronicos — Redactar correos',
+        num: '5 / 14',
+        body: `<p style="font-size:18px;"><strong>Prompt base para cualquier correo:</strong></p>
+        <div class="block">
+            <div class="block-title">Plantilla de prompt</div>
+            <em>"Redacta un correo electronico <strong>[tipo]</strong> para <strong>[destinatario]</strong>, con el proposito de <strong>[proposito]</strong>. Tono <strong>[tono]</strong>. No exceda <strong>[X]</strong> palabras."</em>
+        </div>
+        <p style="margin-top:20px;"><strong>Ejemplos de tipos de correo:</strong></p>
+        <ul>
+            <li>Correo de presentacion.</li>
+            <li>Correo de solicitud de informacion.</li>
+            <li>Correo de agradecimiento.</li>
+            <li>Correo de seguimiento.</li>
+            <li>Correo de queja o reclamacion.</li>
+            <li>Correo para programar una reunion.</li>
+        </ul>`
+    },
+
+    {
+        titulo: '2. Correos Electronicos — Ejemplos practicos',
+        num: '6 / 14',
+        body: `<div class="block block-blue">
+            <div class="block-title">Correo formal — Solicitud de empleo</div>
+            <em>"Redacta un correo formal adjuntando mi curriculum para postularme al puesto de asistente administrativo. Mi nombre es Juan Perez."</em>
+        </div>
+        <div class="block block-pink" style="margin-top:15px;">
+            <div class="block-title">Correo informal — Recordatorio</div>
+            <em>"Escribe un correo amigable para recordarle a un companero que debe enviarme el reporte antes del viernes."</em>
+        </div>
+        <div class="block" style="margin-top:15px;">
+            <div class="block-title">Correo persuasivo — Invitacion</div>
+            <em>"Redacta un correo persuasivo invitando a los empleados a inscribirse en el curso de IA. Destaca los beneficios."</em>
+        </div>`
+    },
+
+    {
+        titulo: '2. Correos Electronicos — Corregir y mejorar',
+        num: '7 / 14',
+        body: `<div class="block block-vino">
+            <div class="block-title">Ya tienes un borrador?</div>
+            Puedes pegarlo directamente y pedirle a ChatGPT que lo mejore!
+        </div>
+        <p style="margin-top:20px;"><strong>Prompts utiles:</strong></p>
+        <ul>
+            <li><em>"Corrige la ortografia y gramatica de este correo: [pega tu texto]"</em></li>
+            <li><em>"Haz este correo mas profesional: [pega tu texto]"</em></li>
+            <li><em>"Reduce este correo a 3 parrafos sin perder informacion importante: [pega tu texto]"</em></li>
+            <li><em>"Cambia el tono de este correo a uno mas amigable: [pega tu texto]"</em></li>
+        </ul>`
+    },
+
+    // ---------- DOCUMENTOS Y REPORTES ----------
+    {
+        titulo: '3. Documentos y Reportes',
+        num: '8 / 14',
+        body: `<ul>
+            <li>ChatGPT puede ayudarte a <strong>estructurar</strong> documentos desde cero.</li>
+            <li>Puedes pedirle <strong>esquemas</strong> y <strong>borradores</strong> iniciales.</li>
+            <li>Ideal para <strong>informes ejecutivos</strong>, <strong>ensayos</strong> y <strong>reportes tecnicos</strong>.</li>
+        </ul>
+        <div class="block" style="margin-top:20px;">
+            <div class="block-title">Prompt para estructura de documento</div>
+            <em>"Propon una estructura para un informe de 3 paginas sobre el impacto de la inteligencia artificial en la educacion. Incluye introduccion, 3 secciones principales y conclusion."</em>
+        </div>
+        <div class="block block-blue" style="margin-top:15px;">
+            Una vez que tengas la estructura, pidele que desarrolle cada seccion una por una.
+        </div>`
+    },
+
+    {
+        titulo: '3. Documentos y Reportes — Resumir y sintetizar',
+        num: '9 / 14',
+        body: `<p style="font-size:18px;margin-bottom:20px;"><strong>Tienes un texto largo? ChatGPT puede resumirlo:</strong></p>
+        <div class="columns">
+            <div><strong style="color:#3d5a96;">Prompts para resumir:</strong>
+            <ul><li><em>"Resume este texto en 3 parrafos."</em></li>
+            <li><em>"Dame los puntos clave de este documento en vinetas."</em></li>
+            <li><em>"Extrae las 5 ideas principales."</em></li></ul></div>
+            <div><strong style="color:#3d5a96;">Prompts para sintetizar:</strong>
+            <ul><li><em>"Explica esto como si tuviera 12 anos."</em></li>
+            <li><em>"Convierte este informe en una presentacion de 5 diapositivas."</em></li>
+            <li><em>"Traduce esto a un lenguaje sencillo."</em></li></ul></div>
+        </div>
+        <div class="block block-vino" style="margin-top:15px;">
+            <div class="block-title">Importante</div>
+            Verifica siempre la informacion. La IA puede omitir detalles importantes al resumir.
+        </div>`
+    },
+
+    // ---------- BUENAS PRACTICAS ----------
+    {
+        titulo: '4. Buenas Practicas',
+        num: '10 / 14',
+        body: `<ol style="font-size:17px;line-height:2.4;">
+            <li><strong>Se especifico:</strong> Cuanto mas detalle des, mejor sera el resultado.</li>
+            <li><strong>Itera:</strong> Si no te gusta la respuesta, pidele ajustes o vuelvelo a intentar.</li>
+            <li><strong>Revisa siempre:</strong> La IA puede cometer errores o inventar informacion.</li>
+            <li><strong>No compartas datos sensibles:</strong> Evita escribir contrasenas, numeros de cuenta o informacion personal.</li>
+            <li><strong>Usa tu criterio:</strong> Eres responsable del contenido final, no la IA.</li>
+        </ol>`
+    },
+
+    {
+        titulo: '4. Buenas Practicas — Verificacion de informacion',
+        num: '11 / 13',
+        body: `<div class="block block-vino">
+            <div class="block-title">Cuidado con las alucinaciones!</div>
+            ChatGPT puede generar informacion que suene verdadera pero sea completamente falsa. Esto se conoce como <strong>alucinacion</strong>.
+        </div>
+        <p style="margin-top:20px;"><strong>Como verificarlo?</strong></p>
+        <ul>
+            <li>Contrasta con fuentes confiables (Google, documentos oficiales).</li>
+            <li>Pregunta a ChatGPT por sus fuentes (<em>"En que te basas para decir eso?"</em>).</li>
+            <li>Usa tu conocimiento previo para identificar inconsistencias.</li>
+            <li>Para datos numericos o fechas, verifica siempre manualmente.</li>
+        </ul>`
+    },
+
+
+
+    // ---------- CONCLUSIONES ----------
+    {
+        titulo: '5. Conclusiones',
+        num: '12 / 13',
+        body: `<ul style="font-size:17px;line-height:2.4;">
+            <li>ChatGPT es una herramienta poderosa para la redaccion de textos, correos y documentos.</li>
+            <li>La clave esta en saber <strong>preguntar</strong> (escribir buenos prompts).</li>
+            <li>Puedes <strong>ahorrar tiempo</strong> en tareas repetitivas de redaccion.</li>
+            <li>Siempre debes <strong>revisar y verificar</strong> el contenido generado.</li>
+            <li>La practica constante mejora la calidad de los resultados.</li>
+        </ul>
+        <div class="block center" style="margin-top:25px;">
+            <div class="block-title">Frase final</div>
+            <em>"La IA no reemplaza tu criterio, lo potencia."</em>
+        </div>`
+    },
+
+    // ---------- GRACIAS ----------
+    {
+        titulo: 'Gracias por su atencion!',
+        num: '13 / 13',
+        body: `<div class="final">
+            <h2>Dudas o comentarios?</h2>
+            <p>Participa en el foro del tema</p>
+            <p style="margin-top:30px;color:#3d5a96;font-weight:700;">ICATHI 4.0 — Inteligencia Artificial para todos</p>
+        </div>`
+    }
+];
+
+let actual = 0;
+
+function renderSlide(i) {
+    const s = slides[i];
+    const c = document.getElementById('slides-container');
+    if (s.tipo === 'portada') {
+        c.innerHTML = '<div class="slide portada">' +
+            '<div class="portada-bg"></div>' +
+            '<div class="franja1"></div><div class="franja2"></div><div class="franja3"></div><div class="franja4"></div>' +
+            '<div class="portada-content">' +
+            '<div class="campus">CAMPUS VIRTUAL</div>' +
+            '<h1>Inteligencia Artificial<span>para Todos</span></h1>' +
+            '<div class="tema-label">Tema:</div>' +
+            '<div class="tema">Redaccion de textos, correos<br>y documentos con ChatGPT</div>' +
+            '<div class="instituto">Instituto de Capacitacion del Estado de Hidalgo</div>' +
+            '<div class="fecha">' + new Date().toLocaleDateString('es-MX', {year:'numeric',month:'long',day:'numeric'}) + '</div>' +
+            '</div></div>';
+    } else {
+        c.innerHTML = '<div class="slide">' +
+            '<div class="slide-header"><h2>' + s.titulo + '</h2><span class="num">' + s.num + '</span></div>' +
+            '<div class="slide-body">' + s.body + '</div>' +
+            '<div class="slide-footer"><span>ICATHI 4.0</span><span>' + s.num + '</span></div>' +
+            '</div>';
+    }
+    document.getElementById('counter').textContent = 'Diapositiva ' + (i + 1) + ' de ' + slides.length;
+    document.querySelectorAll('.nav-bar button').forEach((b, idx) => {
+        b.classList.toggle('activo', idx === i);
+    });
+}
+
+function sig() {
+    if (actual < slides.length - 1) { actual++; renderSlide(actual); }
+}
+function ant() {
+    if (actual > 0) { actual--; renderSlide(actual); }
+}
+
+// Nav bar
+document.addEventListener('DOMContentLoaded', () => {
+    const nav = document.createElement('div');
+    nav.className = 'nav-bar';
+    slides.forEach((_, i) => {
+        const b = document.createElement('button');
+        b.textContent = i + 1;
+        b.onclick = () => { actual = i; renderSlide(i); };
+        nav.appendChild(b);
+    });
+    document.body.insertBefore(nav, document.querySelector('.nav-controls'));
+    renderSlide(0);
+});
+</script>
+
+</body>
+</html>
